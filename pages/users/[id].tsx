@@ -1,3 +1,5 @@
+import Layout from "components/Layout";
+import UserCard from "components/UserCard";
 import { gql } from "graphql-request";
 import type { FellowshipUnion } from "graphql/db";
 import { DUMMY_PROJECT_ROW, DUMMY_USER_ROW } from "graphql/dummy-data";
@@ -18,15 +20,7 @@ const USER_QUERY = gql`
       }
     }
   }
-`
-
-type QueryData = {
-  user: User;
-}
-
-type QueryVars = {
-  id: number;
-}
+`;
 
 type User = {
   id: number;
@@ -35,15 +29,16 @@ type User = {
   fellowship: Exclude<FellowshipUnion, "all">;
   avatar_url: string;
   projects: Project[];
-}
+};
 
 type Project = {
   id: number;
   name: string;
   icon_url: string;
-}
+};
 
 export default function UserPage() {
+  const { query } = useRouter();
   // TODO: add data query
   const user = {
     ...DUMMY_USER_ROW,
@@ -58,5 +53,5 @@ export default function UserPage() {
     <Layout>
       <UserCard user={user} />
     </Layout>
-  )
+  );
 }

@@ -1,3 +1,5 @@
+import Layout from "components/Layout";
+import ProjectCard from "components/ProjectCard";
 import { gql } from "graphql-request";
 import { DUMMY_PROJECT_ROW, DUMMY_USER_ROW } from "graphql/dummy-data";
 import { useRouter } from "next/router";
@@ -16,15 +18,7 @@ const PROJECT_QUERY = gql`
       }
     }
   }
-`
-
-type QueryData = {
-  project: Project;
-}
-
-type QueryVars = {
-  id: number;
-}
+`;
 
 type Project = {
   id: number;
@@ -32,15 +26,16 @@ type Project = {
   description: string;
   icon_url: string;
   users: User[];
-}
+};
 
 type User = {
   id: number;
   name: string;
   avatar_url: string;
-}
+};
 
 export default function ProjectPage() {
+  const { query } = useRouter();
   // TODO: add data query
   const project = {
     ...DUMMY_PROJECT_ROW,
@@ -55,5 +50,5 @@ export default function ProjectPage() {
     <Layout>
       <ProjectCard project={project} />
     </Layout>
-  )
+  );
 }

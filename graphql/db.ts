@@ -1,14 +1,17 @@
-import path from 'path'
-import {Database} from 'sqlite3'
+import path from "path";
+import { Database } from "sqlite3";
 
 class AsyncDatabase {
   db: Database;
 
   constructor(filename: string) {
-    this.db = new Database(filename)
+    this.db = new Database(filename);
   }
 
-  async getOne<T = any>(sql: string, params: any[] = []): Promise<T | undefined> {
+  async getOne<T = any>(
+    sql: string,
+    params: any[] = []
+  ): Promise<T | undefined> {
     const rows = await this.getAll(sql, params);
     return rows[0];
   }
@@ -19,16 +22,16 @@ class AsyncDatabase {
       const stmt = this.db.prepare(sql);
       stmt.all(...params, (err: Error | undefined, rows: any[]) => {
         if (err) {
-          reject(err)
+          reject(err);
         } else {
-          resolve(rows)
+          resolve(rows);
         }
-      })
-    })
+      });
+    });
   }
 }
 
-export default new AsyncDatabase(path.join(process.cwd(), 'db.sqlite'))
+export default new AsyncDatabase(path.join(process.cwd(), "db.sqlite"));
 
 export type UserRow = {
   id: number;
@@ -38,7 +41,7 @@ export type UserRow = {
   fellowship: Exclude<FellowshipUnion, "all">;
   created_ts: Date;
   updated_ts: Date;
-}
+};
 
 export type ProjectRow = {
   id: number;
@@ -47,12 +50,12 @@ export type ProjectRow = {
   icon_url: string;
   created_ts: Date;
   updated_ts: Date;
-}
+};
 
 export type UserProjectRow = {
   user_id: number;
   project_id: number;
-}
+};
 
 export type AnnouncementRow = {
   id: number;
@@ -61,6 +64,8 @@ export type AnnouncementRow = {
   body: string;
   created_ts: Date;
   updated_ts: Date;
+};
+
 const fellowship = {
   founders: "founders",
   angels: "angels",

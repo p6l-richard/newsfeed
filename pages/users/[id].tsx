@@ -1,3 +1,4 @@
+import { gql } from "graphql-request";
 import type { FellowshipUnion } from "graphql/db";
 import { DUMMY_PROJECT_ROW, DUMMY_USER_ROW } from "graphql/dummy-data";
 import { useRouter } from "next/router";
@@ -43,10 +44,14 @@ type Project = {
 }
 
 export default function UserPage() {
+  // TODO: add data query
   const user = {
     ...DUMMY_USER_ROW,
     projects: [DUMMY_PROJECT_ROW],
   };
+  // TODO: add loading, error & empty state
+  if (!user) {
+    return null;
   }
 
   return (

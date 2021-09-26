@@ -34,7 +34,7 @@ export type UserRow = {
   name: string;
   bio: string;
   avatar_url: string;
-  fellowship: "founders" | "angels" | "writers";
+  fellowship: Exclude<FellowshipUnion, "all">;
   created_ts: Date;
   updated_ts: Date;
 }
@@ -55,9 +55,18 @@ export type UserProjectRow = {
 
 export type AnnouncementRow = {
   id: number;
-  fellowship: "founders" | "angels" | "writers" | "all";
+  fellowship: FellowshipUnion;
   title: string;
   body: string;
   created_ts: Date;
   updated_ts: Date;
-}
+const fellowship = {
+  founders: "founders",
+  angels: "angels",
+  writers: "writers",
+  all: "all",
+} as const;
+
+export type FellowshipEnum = typeof fellowship;
+
+export type FellowshipUnion = FellowshipEnum[keyof FellowshipEnum];

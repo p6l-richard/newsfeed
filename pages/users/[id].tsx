@@ -1,7 +1,6 @@
-import {useRouter} from 'next/router'
-import {useQuery, gql} from '@apollo/client'
-import Layout from 'components/Layout'
-import UserCard from 'components/UserCard'
+import type { FellowshipUnion } from "graphql/db";
+import { DUMMY_PROJECT_ROW, DUMMY_USER_ROW } from "graphql/dummy-data";
+import { useRouter } from "next/router";
 
 const USER_QUERY = gql`
   query user($id: Int!) {
@@ -32,7 +31,7 @@ type User = {
   id: number;
   name: string;
   bio: string;
-  fellowship: "fellows" | "angels" | "writers";
+  fellowship: Exclude<FellowshipUnion, "all">;
   avatar_url: string;
   projects: Project[];
 }
@@ -44,19 +43,10 @@ type Project = {
 }
 
 export default function UserPage() {
-  const {query} = useRouter()
-
-  const {data, error, loading} = useQuery<QueryData, QueryVars>(
-    USER_QUERY,
-    {
-      skip: !query.id,
-      variables: {id: Number(query.id)},
-    }
-  )
-  const user = data?.user;
-
-  if (!user || loading || error) {
-    return null
+  const user = {
+    ...DUMMY_USER_ROW,
+    projects: [DUMMY_PROJECT_ROW],
+  };
   }
 
   return (

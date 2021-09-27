@@ -66,13 +66,13 @@ export type AnnouncementRow = {
   updated_ts: Date;
 };
 
-const fellowship = {
+export const FELLOWSHIP_ENUM = {
   founders: "founders",
   angels: "angels",
   writers: "writers",
   all: "all",
 } as const;
 
-export type FellowshipEnum = typeof fellowship;
+export const FELLOWSHIPS = ["founders", "angels", "writers", "all"] as const;
 
-export type FellowshipUnion = FellowshipEnum[keyof FellowshipEnum];
+export type FellowshipUnion = typeof FELLOWSHIPS;

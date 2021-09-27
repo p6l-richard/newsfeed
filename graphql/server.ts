@@ -2,6 +2,8 @@ import {ApolloServer, gql} from 'apollo-server-micro'
 import * as resolvers from './resolvers'
 
 const typeDefs = gql`
+  scalar Date
+
   type Project {
     id: Int!
     name: String!

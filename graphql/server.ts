@@ -1,5 +1,7 @@
-import {ApolloServer, gql} from 'apollo-server-micro'
-import * as resolvers from './resolvers'
+import { ApolloServer, gql } from "apollo-server-micro";
+import * as newsPieces from "feature-newsfeed/graphql/resolvers";
+import { typeDefs as NewsPiece } from "feature-newsfeed/graphql/schema";
+import * as resolvers from "./resolvers";
 
 const typeDefs = gql`
   scalar Date
@@ -27,4 +29,10 @@ const typeDefs = gql`
   }
 `;
 
-export const server = new ApolloServer({typeDefs, resolvers})
+export const server = new ApolloServer({
+  typeDefs: [typeDefs, NewsPiece],
+  resolvers: {
+    ...resolvers,
+    Query: { ...resolvers.Query, ...newsPieces.Query },
+  },
+});

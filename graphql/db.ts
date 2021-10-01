@@ -75,4 +75,4 @@ export const FELLOWSHIP_ENUM = {
 
 export const FELLOWSHIPS = ["founders", "angels", "writers", "all"] as const;
 
-export type FellowshipUnion = typeof FELLOWSHIPS;
+export type FellowshipUnion = typeof FELLOWSHIPS[number];

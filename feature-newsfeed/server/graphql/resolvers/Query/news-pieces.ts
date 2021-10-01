@@ -1,6 +1,7 @@
 import { UserInputError } from "apollo-server-errors";
-import db, { FellowshipUnion, FELLOWSHIPS, FELLOWSHIP_ENUM } from "graphql/db";
-import { NewsPieceRow } from "../../db";
+import { FELLOWSHIPS, FellowshipUnion } from "graphql/data-models";
+import db from "graphql/db";
+import { NewsPieceRow } from "../../../../shared/data-models";
 import { composeNewsPiecesQuery } from "./composition";
 
 type Args = {

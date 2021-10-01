@@ -1,6 +1,6 @@
 import { ApolloServer, gql } from "apollo-server-micro";
-import * as newsPieces from "feature-newsfeed/graphql/resolvers";
-import { typeDefs as NewsPiece } from "feature-newsfeed/graphql/schema";
+import * as newsPieces from "feature-newsfeed/server/graphql/resolvers";
+import { typeDefs as NewsPiece } from "feature-newsfeed/server/graphql/schema";
 import * as resolvers from "./resolvers";
 
 const typeDefs = gql`

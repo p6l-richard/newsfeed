@@ -1,4 +1,4 @@
-import { FellowshipUnion, FELLOWSHIP_ENUM } from "graphql/db";
+import { FellowshipUnion, FELLOWSHIP_ENUM } from "graphql/data-models";
 
 export function composeNewsPiecesQuery(fellowship: FellowshipUnion = "all") {
   // Founders and angels are interested in new founders' projects.

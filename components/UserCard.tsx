@@ -1,4 +1,4 @@
-import { FellowshipUnion } from "graphql/db";
+import type { FellowshipUnion } from "graphql/data-models";
 import Link from "next/link";
 import styled from "styled-components";
 import Card from "./Card";

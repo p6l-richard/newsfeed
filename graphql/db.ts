@@ -1,5 +1,6 @@
 import path from "path";
 import { Database } from "sqlite3";
+import type { FellowshipUnion } from "./data-models";
 
 class AsyncDatabase {
   db: Database;
@@ -65,14 +66,3 @@ export type AnnouncementRow = {
   created_ts: Date;
   updated_ts: Date;
 };
-
-export const FELLOWSHIP_ENUM = {
-  founders: "founders",
-  angels: "angels",
-  writers: "writers",
-  all: "all",
-} as const;
-
-export const FELLOWSHIPS = ["founders", "angels", "writers", "all"] as const;
-
-export type FellowshipUnion = typeof FELLOWSHIPS[number];

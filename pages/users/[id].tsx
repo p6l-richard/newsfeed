@@ -1,7 +1,7 @@
 import Layout from "components/Layout";
 import UserCard from "components/UserCard";
 import { gql } from "graphql-request";
-import type { FellowshipUnion } from "graphql/db";
+import type { FellowshipUnion } from "graphql/data-models";
 import { DUMMY_PROJECT_ROW, DUMMY_USER_ROW } from "graphql/dummy-data";
 import { useRouter } from "next/router";
 

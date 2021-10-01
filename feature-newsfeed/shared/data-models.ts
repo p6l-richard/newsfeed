@@ -1,4 +1,4 @@
-import { FellowshipUnion } from "graphql/db";
+import type { FellowshipUnion } from "graphql/data-models";
 
 export const NEWS_TYPES = ["announcement", "user", "project"] as const;
 
@@ -8,7 +8,7 @@ export const NEWS_TYPE_ENUM = {
   project: "project",
 } as const;
 
-export type NewsTypeUnion = typeof NEWS_TYPES;
+export type NewsTypeUnion = typeof NEWS_TYPES[number];
 
 export type NewsPieceRow = {
   id: number;

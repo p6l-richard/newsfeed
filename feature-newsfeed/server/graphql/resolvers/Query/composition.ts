@@ -1,6 +1,13 @@
-import { FellowshipUnion, FELLOWSHIP_ENUM } from "graphql/data-models";
+import type { FellowshipUnion } from "graphql/data-models";
+import { FELLOWSHIP_ENUM } from "graphql/data-models";
+import type { Args } from "./news-pieces";
 
-export function composeNewsPiecesQuery(fellowship: FellowshipUnion = "all") {
+const LIMIT = parseInt(process.env.RESULT_LIMIT);
+
+export function composeNewsPiecesQuery({
+  fellowship = "all",
+  cursor = 0,
+}: Args) {
   // Founders and angels are interested in new founders' projects.
   // Writers want to connect only to other writers and are not interested in founders' projects.
   const hasProjects =
@@ -31,7 +38,9 @@ export function composeNewsPiecesQuery(fellowship: FellowshipUnion = "all") {
                             u.created_ts created
                    FROM     users u
     ${shouldFilterUsers ? composeUserFilter(fellowship) : ""}
-               ORDER BY     created;
+               ORDER BY     created
+                  LIMIT     ${LIMIT}
+                 OFFSET     ${cursor * LIMIT};
   `;
 }
 
@@ -48,12 +57,13 @@ const composeUserFilter = (
 const WITH_PROJECT_TABLE = `
     WITH p
         AS (SELECT  p.*,
-                    u.fellowship
-                    FROM   user_projects up
-                    JOIN   projects p
-                    ON     up.project_id = p.id
-                    JOIN   users u
-                    ON     up.user_id = u.id
+                    (SELECT u.fellowship
+                       FROM user_projects up
+                            INNER JOIN users u
+                            ON up.user_id  = u.id AND up.project_id  = p.id
+                      LIMIT 1
+                    ) fellowship
+              FROM 	projects p
             )` as const;
 
 const SELECT_PROJECTS = `

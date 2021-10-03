@@ -6,6 +6,7 @@ declare global {
       HOST: string;
       GQL_PATH: string;
       NEXT_PUBLIC_GQL_ENDPOINT: string;
+      RESULT_LIMIT: string;
     }
   }
 }

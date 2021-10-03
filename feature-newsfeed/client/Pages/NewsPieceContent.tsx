@@ -10,15 +10,15 @@ interface Props {
 export default function NewsfeedContent({ newsPieces }: Props) {
   return (
     <>
-      {newsPieces?.map((newsPiece) => (
-        <NewsPieceCard newsPiece={newsPiece} />
+      {newsPieces?.map((newsPiece, i) => (
+        <NewsPieceCard newsPiece={newsPiece} key={i} />
       ))}
     </>
   );
 }
 
 type CardProps = {
-  newsPiece: Partial<NewsPieceRow>;
+  newsPiece: NewsPieceRow;
 };
 
 function NewsPieceCard({ newsPiece }: CardProps) {
@@ -35,10 +35,8 @@ function NewsPieceCard({ newsPiece }: CardProps) {
           )}
         </ColumnLeft>
         <ColumnRight>
-          {newsPiece.title && <h2>{newsPiece.title}</h2>}
-          {newsPiece.description && (
-            <Markdown>{newsPiece.description}</Markdown>
-          )}
+          <h2>{newsPiece.title}</h2>
+          <Markdown>{newsPiece.description}</Markdown>
         </ColumnRight>
       </Columns>
       <Footer>

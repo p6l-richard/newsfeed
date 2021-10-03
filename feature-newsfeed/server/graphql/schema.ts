@@ -11,7 +11,12 @@ export const typeDefs = gql`
     created: Date!
   }
 
+  type NewsPieceResponse {
+    data: [NewsPiece!]
+    nextCursor: Int
+    previousCursor: Int
+  }
   extend type Query {
-    newsPieces(fellowship: String): [NewsPiece!]!
+    newsPieces(fellowship: String = "all", cursor: Int = 0): NewsPieceResponse!
   }
 `;

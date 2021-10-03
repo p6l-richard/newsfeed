@@ -1,21 +1,25 @@
 import Spinner from "components/Spinner";
 import { useNewsPieces } from "feature-newsfeed/client/data-access/news-pieces";
 import { gql } from "graphql-request";
-import { FELLOWSHIPS, FellowshipUnion } from "graphql/data-models";
+import type { FellowshipUnion } from "graphql/data-models";
+import { FELLOWSHIPS } from "graphql/data-models";
 import React, { useMemo, useState } from "react";
 import NewsfeedFilter from "./NewsfeedFilter";
 import NewsfeedContent from "./NewsPieceContent";
 
 function NewsfeedPageComponent() {
   const fellowships = useMemo(() => [...FELLOWSHIPS], [FELLOWSHIPS]);
-  const [fellowship, setFellowship] = useState<FellowshipUnion>("all");
-  const newsQuery = useMemo(() => getNewsQuery(fellowship), [fellowship]);
-  const { data: newsPieces, isLoading: isLoadingNewsPieces } = useNewsPieces(
-    newsQuery,
-    {
-      filters: fellowship,
-    }
-  );
+  const [selectedFellowship, setSelectedFellowship] =
+    useState<FellowshipUnion>("all");
+  const {
+    data: newsPieces,
+    isFetching: isFetchingNewsPieces,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useNewsPieces(NEWS_QUERY, {
+    fellowship: selectedFellowship,
+  });
 
   return (
     <>
@@ -24,12 +28,28 @@ function NewsfeedPageComponent() {
         <>
           <NewsfeedFilter
             tabs={fellowships}
-            activeTab={fellowship}
-            onTabClick={setFellowship}
+            activeTab={selectedFellowship}
+            onTabClick={setSelectedFellowship}
           ></NewsfeedFilter>
-          <NewsfeedContent newsPieces={newsPieces} />
+          {newsPieces.pages.map((newsPiecePage, i) => {
+            return (
+              <React.Fragment key={i}>
+                <NewsfeedContent newsPieces={newsPiecePage.data} />
+              </React.Fragment>
+            );
+          })}
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+          >
+            {isFetchingNextPage
+              ? "Loading more..."
+              : hasNextPage
+              ? "Load More"
+              : "Nothing more to load"}
+          </button>
         </>
-      ) : isLoadingNewsPieces ? (
+      ) : isFetchingNewsPieces ? (
         <Spinner />
       ) : (
         <div>Sorry, something went wrong</div>
@@ -38,26 +58,22 @@ function NewsfeedPageComponent() {
   );
 }
 
-const getNewsQuery = (fellowship: FellowshipUnion) => gql`
-  query newsPieces {
-    newsPieces(fellowship: "${fellowship}") {
-      id
-      title
-      description
-      fellowship
-      img_url
-      created
-      news_type
+const NEWS_QUERY = gql`
+  query NewsPieces($fellowship: String, $cursor: Int) {
+    newsPieces(fellowship: $fellowship, cursor: $cursor) {
+      data {
+        id
+        news_type
+        title
+        fellowship
+        img_url
+        created
+        description
+      }
+      nextCursor
+      previousCursor
     }
   }
 `;
-
-export async function getStaticProps() {
-  return {
-    props: {
-      fellowships: FELLOWSHIPS,
-    },
-  };
-}
 
 export default NewsfeedPageComponent;

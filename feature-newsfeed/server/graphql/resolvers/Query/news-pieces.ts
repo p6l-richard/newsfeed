@@ -1,17 +1,21 @@
 import { UserInputError } from "apollo-server-errors";
-import { FELLOWSHIPS, FellowshipUnion } from "graphql/data-models";
+import type { Pagination, Response } from "graphql/client";
+import type { FellowshipUnion } from "graphql/data-models";
+import { FELLOWSHIPS } from "graphql/data-models";
 import db from "graphql/db";
-import { NewsPieceRow } from "../../../../shared/data-models";
+import type { NewsPieceRow } from "../../../../shared/data-models";
 import { composeNewsPiecesQuery } from "./composition";
 
-type Args = {
+export type Args = {
   fellowship?: FellowshipUnion;
-};
+} & Pagination;
+
+const LIMIT = parseInt(process.env.RESULT_LIMIT);
 
 export default async function newsPieces(
   parent: unknown,
-  { fellowship = "all" }: Args
-): Promise<NewsPieceRow[]> {
+  { fellowship = "all", cursor = 0 }: Args
+): Promise<Response<NewsPieceRow[]>> {
   const isInvalidInput = !FELLOWSHIPS.includes(fellowship);
   if (isInvalidInput) {
     throw new UserInputError(
@@ -19,11 +23,17 @@ export default async function newsPieces(
     );
   }
   const newsPieces: NewsPieceRow[] | undefined = await db.getAll(
-    composeNewsPiecesQuery(fellowship)
+    composeNewsPiecesQuery({ fellowship, cursor })
   );
 
   if (!newsPieces) {
     throw new Error(`Couldn't get newsPieces`);
   }
-  return newsPieces;
+  const hasNextCursor = newsPieces.length === LIMIT;
+  const hasPreviousCursor = newsPieces.length !== 0 && cursor > 0;
+  return {
+    data: newsPieces,
+    ...(hasNextCursor && { nextCursor: cursor + 1 }),
+    ...(hasPreviousCursor && { previousCursor: cursor - 1 }),
+  };
 }

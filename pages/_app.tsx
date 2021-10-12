@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import { useState } from "react";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
@@ -11,13 +12,20 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
-            <Component {...pageProps} />
+            <ApolloProvider client={apolloClient}>
+              <Component {...pageProps} />
+            </ApolloProvider>
           </Hydrate>
         </QueryClientProvider>
       </ThemeProvider>
     </>
   );
 }
+
+const apolloClient = new ApolloClient({
+  uri: "/api/graphql",
+  cache: new InMemoryCache(),
+});
 
 const theme = {
   colors: {},

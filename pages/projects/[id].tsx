@@ -1,8 +1,7 @@
+import { useRouter } from "next/router";
+import { useQuery, gql } from "@apollo/client";
 import Layout from "components/Layout";
 import ProjectCard from "components/ProjectCard";
-import { gql } from "graphql-request";
-import { DUMMY_PROJECT_ROW, DUMMY_USER_ROW } from "graphql/dummy-data";
-import { useRouter } from "next/router";
 
 const PROJECT_QUERY = gql`
   query project($id: Int!) {
@@ -20,6 +19,14 @@ const PROJECT_QUERY = gql`
   }
 `;
 
+type QueryData = {
+  project: Project;
+};
+
+type QueryVars = {
+  id: number;
+};
+
 type Project = {
   id: number;
   name: string;
@@ -36,13 +43,17 @@ type User = {
 
 export default function ProjectPage() {
   const { query } = useRouter();
-  // TODO: add data query
-  const project = {
-    ...DUMMY_PROJECT_ROW,
-    users: [DUMMY_USER_ROW],
-  };
-  // TODO: add loading, error & empty state
-  if (!project) {
+
+  const { data, error, loading } = useQuery<QueryData, QueryVars>(
+    PROJECT_QUERY,
+    {
+      skip: !query.id,
+      variables: { id: Number(query.id) },
+    }
+  );
+  const project = data?.project;
+
+  if (!project || loading || error) {
     return null;
   }
 
